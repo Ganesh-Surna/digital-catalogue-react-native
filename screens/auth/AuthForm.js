@@ -32,12 +32,11 @@ const AuthForm = ({ navigation, route }) => {
     },
     onError: (err) => {
       console.log("err is:",err);
-      setErrorMsg(err.info?.message || "Enter valid credentials!");
+      setErrorMsg(err.info ? err.info.errorMessage : "Enter valid credentials!");
     },
     onSettled: ()=>{
       setUserName("");
       setPassword("");
-      navigation.navigate("catalogue-drawer");
     }
   });
 
