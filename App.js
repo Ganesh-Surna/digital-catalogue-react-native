@@ -1,12 +1,56 @@
+import { QueryClientProvider } from '@tanstack/react-query';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { Button, StyleSheet, Text, View } from 'react-native';
+import 'react-native-gesture-handler';
+import { queryClientObj } from './util/http';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import Catalogue from './screens/catalogue/Catalogue';
+import { NavigationContainer } from '@react-navigation/native';
+import AuthForm from './screens/auth/AuthForm';
+import {FontAwesome} from "@expo/vector-icons"
+
+const Stack = createNativeStackNavigator();
+const Drawer = createDrawerNavigator();
+
+const DrawerNavigatorFn = ()=>{
+  return <>
+    <Drawer.Navigator screenOptions={({navigation, route})=>({
+      headerRight: ()=>(<View style={{marginRight: 20}}>
+        <Button title='Log out' onPress={()=>navigation.navigate("auth")} />
+      </View>),
+      headerTitleAlign: "left",
+      headerStyle: {backgroundColor: "#eccaca"},
+    })}>
+      <Drawer.Screen name="catalogue" component={Catalogue} options={{
+        title: "Catalogue",
+        drawerLabel: "Catalogue",
+        drawerIcon: ({size, color,focused})=><FontAwesome name="diamond" color={color} size={size}/>
+      }} />
+    </Drawer.Navigator>
+  </>
+}
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
+    <>
       <StatusBar style="auto" />
-    </View>
+      <QueryClientProvider client={queryClientObj}>
+        <NavigationContainer>
+          <Stack.Navigator screenOptions={{
+            headerTitleAlign: "center",
+            headerStyle: {backgroundColor: "#eccaca"}
+          }}>
+            <Stack.Screen name="auth" component={AuthForm} options={{
+              title: "Login",
+            }} />
+            <Stack.Screen name="catalogue-drawer" component={DrawerNavigatorFn} options={{
+              headerShown: false,
+            }} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </QueryClientProvider>
+    </>
   );
 }
 
