@@ -4,6 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import { login } from "../../util/http";
 import IonIcons from "@expo/vector-icons/Ionicons";
 import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const AuthForm = ({ navigation, route }) => {
   const [userName, setUserName] = useState("");
@@ -25,13 +26,20 @@ const AuthForm = ({ navigation, route }) => {
 
   const { mutate, data, isPending, error, isError } = useMutation({
     mutationFn: login,
-    onSuccess: (data) => {
-      console.log("data is:",data);
+    onSuccess: async (data) => {
+      console.log("before syncstorage")
+      // console.log("data is:",data);
+      AsyncStorage.setItem("ACCOUNT", JSON.stringify(data.account));
+      AsyncStorage.setItem("USER_ID", JSON.stringify(data.id));
+      AsyncStorage.setItem("TOKEN", data.token);
+      AsyncStorage.setItem("FULL_NAME", data.firstName + " " + data.lastName);
+      AsyncStorage.setItem("USER_NAME", data.userName);
+      console.log("after syncstorage")
       setErrorMsg();
       navigation.navigate("catalogue-drawer");
     },
     onError: (err) => {
-      console.log("err is:",err);
+      // console.log("err is:",err);
       setErrorMsg(err.info ? err.info.errorMessage : "Enter valid credentials!");
     },
     onSettled: ()=>{
@@ -41,7 +49,7 @@ const AuthForm = ({ navigation, route }) => {
   });
 
   if(data){
-    console.log("data is:",data);
+    console.log("data loaded:",data);
   }
 
   function handleLogin() {
@@ -49,59 +57,8 @@ const AuthForm = ({ navigation, route }) => {
       userName: userName,
       password: password,
     };
-    // console.log({...formData});
 
     mutate(formData);
-
-    // fetch('http://localhost:8080/api/login', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify(formData),
-    //   })
-
-//     axios.post('http://192.168.31.161/api/login', formData)
-//     .then(async response => {
-//       if (!response.ok) {
-//         return response.json().then(errorData => {
-//         if (response.status === 404) {
-//         //   const errorMessage = errorData.message;
-//           Alert.alert("User not found", "Enter valid username!", [{text: "ok", style: "cancel"}])
-//           //console.log('Username does not exist');
-//         } else if (response.status === 401) {
-//           //console.log('Invalid password');
-//         //   const errorMessage = errorData.message;
-//           Alert.alert("Invalid password", "Enter valid password!", [{text: "ok", style: "cancel"}])
-//         }
-//     });
-//     //console.log(response.json());
-//   }
-//   return response.json();
-//   })
-//   .then(data => {
-//     //if(data.message){console.log(data.message)};
-//     console.log("Login Successful!")
-//     if(data && data.userName && data.password)
-//     {
-//         console.log("Login Successful!")
-//     //   localStorage.setItem("TOKEN", "loggedIn");
-//     //   localStorage.setItem("fullName", data.userName);
-//     //   console.log("Logged in data is:", data);
-//     //   console.log("Logged in user id is:", data.id);
-//     //   console.log("Logged in account is:", data.account);
-//     //   localStorage.setItem("ACCOUNT", JSON.stringify(data.account));
-//     //   localStorage.setItem("USER_ID", data.id);
-//     //   navigation.navigate("catalogue-drawer");
-//     }
-//   })
-//   .catch(error => {
-//     console.error('Error occurred:', error.message);
-//   })
-//   .finally(()=>{
-//     navigation.navigate("catalogue-drawer");
-//   });
-// navigation.navigate("catalogue-drawer");
 }
 
   return (
@@ -114,6 +71,8 @@ const AuthForm = ({ navigation, route }) => {
           value={userName}
           onChangeText={handleChangeUserName}
           placeholder="Enter username"
+          autoCapitalize="none"
+          autoCorrect={false}
         />
       </View>
       <View style={styles.inputGrp}>
@@ -124,6 +83,8 @@ const AuthForm = ({ navigation, route }) => {
           onChangeText={handleChangePassword}
           placeholder="Enter password"
           secureTextEntry
+          autoCapitalize="none"
+          autoCorrect={false}
         />
       </View>
       {/* <Button title="Login" onPress={handleLogin} disabled={!formIsValid} /> */}

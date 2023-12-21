@@ -9,15 +9,26 @@ import Catalogue from './screens/catalogue/Catalogue';
 import { NavigationContainer } from '@react-navigation/native';
 import AuthForm from './screens/auth/AuthForm';
 import {FontAwesome} from "@expo/vector-icons"
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Provider } from 'react-redux';
+import store from './store';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 
 const DrawerNavigatorFn = ()=>{
+  function handleLogout(navigation){
+    AsyncStorage.removeItem("ACCOUNT");
+    AsyncStorage.removeItem("USER_ID");
+    AsyncStorage.removeItem("TOKEN");
+    AsyncStorage.removeItem("FULL_NAME");
+    AsyncStorage.removeItem("USER_NAME");
+    navigation.navigate("auth");
+  }
   return <>
     <Drawer.Navigator screenOptions={({navigation, route})=>({
       headerRight: ()=>(<View style={{marginRight: 20}}>
-        <Button title='Log out' onPress={()=>navigation.navigate("auth")} />
+        <Button title='Log out' onPress={()=>handleLogout(navigation)} />
       </View>),
       headerTitleAlign: "left",
       headerStyle: {backgroundColor: "#eccaca"},
@@ -25,7 +36,7 @@ const DrawerNavigatorFn = ()=>{
       <Drawer.Screen name="catalogue" component={Catalogue} options={{
         title: "Catalogue",
         drawerLabel: "Catalogue",
-        drawerIcon: ({size, color,focused})=><FontAwesome name="diamond" color={color} size={size}/>
+        drawerIcon: ({size, color,focused})=><FontAwesome name="diamond" color={color} size={size}/>,
       }} />
     </Drawer.Navigator>
   </>
@@ -35,21 +46,23 @@ export default function App() {
   return (
     <>
       <StatusBar style="auto" />
-      <QueryClientProvider client={queryClientObj}>
-        <NavigationContainer>
-          <Stack.Navigator screenOptions={{
-            headerTitleAlign: "center",
-            headerStyle: {backgroundColor: "#eccaca"}
-          }}>
-            <Stack.Screen name="auth" component={AuthForm} options={{
-              title: "Login",
-            }} />
-            <Stack.Screen name="catalogue-drawer" component={DrawerNavigatorFn} options={{
-              headerShown: false,
-            }} />
-          </Stack.Navigator>
-        </NavigationContainer>
-      </QueryClientProvider>
+      <Provider store={store}>
+        <QueryClientProvider client={queryClientObj}>
+          <NavigationContainer>
+            <Stack.Navigator screenOptions={{
+              headerTitleAlign: "center",
+              headerStyle: {backgroundColor: "#eccaca"}
+            }}>
+              <Stack.Screen name="auth" component={AuthForm} options={{
+                title: "Login",
+              }} />
+              <Stack.Screen name="catalogue-drawer" component={DrawerNavigatorFn} options={{
+                headerShown: false,
+              }} />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </QueryClientProvider>
+      </Provider>
     </>
   );
 }
