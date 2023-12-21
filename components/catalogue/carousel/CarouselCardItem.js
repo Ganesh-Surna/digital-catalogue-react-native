@@ -11,7 +11,7 @@ const CarouselCardItem = ({ item, index }) => {
         source={{ uri: item.preSignedURL }}
         style={styles.image}
       />
-      <Text style={styles.header}>Image {index+1}</Text>
+      <Text style={styles.body}>Image {index+1}</Text>
     </View>
   )
 }
@@ -46,11 +46,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   body: {
+    textAlign: "center",
     color: "#222",
     fontSize: 18,
-    paddingLeft: 20,
-    paddingLeft: 20,
-    paddingRight: 20
+    paddingTop: 10,
   }
 })
 

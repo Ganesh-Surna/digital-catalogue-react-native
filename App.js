@@ -27,8 +27,8 @@ const DrawerNavigatorFn = ()=>{
   }
   return <>
     <Drawer.Navigator screenOptions={({navigation, route})=>({
-      headerRight: ()=>(<View style={{marginRight: 20}}>
-        <Button title='Log out' onPress={()=>handleLogout(navigation)} />
+      headerRight: ()=>(<View style={{marginRight: 20,}}>
+        <Button title='Log out' color="red" onPress={()=>handleLogout(navigation)} />
       </View>),
       headerTitleAlign: "left",
       headerStyle: {backgroundColor: "#eccaca"},
