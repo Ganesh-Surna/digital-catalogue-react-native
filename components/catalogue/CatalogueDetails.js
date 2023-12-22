@@ -1,18 +1,136 @@
-import { View, Text, Button, Image, StyleSheet, ScrollView } from 'react-native'
-import React from 'react'
+import { View, Text, Button, Image, StyleSheet, ScrollView, TextInput, Alert } from 'react-native'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { uiActions } from '../../store/ui-slice';
 import { useDispatch } from 'react-redux';
 import CarouselCards from './carousel/CarouselCards';
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5"
 import FontAwesome from "@expo/vector-icons/FontAwesome"
 import Ionicons from "@expo/vector-icons/Ionicons"
+import { useNavigation } from '@react-navigation/native';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { fetchCart, fetchOrders, postCart, postOrder, queryClientObj } from '../../util/http';
+import { getAccountLoader, getUser } from '../../util/auth';
 
 const CatalogueDetails = ({item, setDesignItem}) => {
     const dispatch = useDispatch();
+    const navigation = useNavigation()
+
+    const [qty, setQty] = useState("1");
+
+    // const [user, setUser] = useState(null);
+    // const [account, setAccount] = useState(null); 
+
+    // useEffect(()=>{
+    //     getUser()
+    //     .then((response)=>{
+    //     //   console.log("resonse:", response);
+    //     //   console.log("parsed response:", typeof response)
+    //     setUser(response);
+    //     })
+    //     .catch((error)=>{
+    //       console.log("error:", error);
+    //     });
+    // },[getUser]);
+
+    // useEffect(()=>{
+    //     getAccountLoader()
+    //     .then((response)=>{
+    //       // console.log("resonse:", response);
+    //       // console.log("parsed response:", typeof response)
+    //       setAccount(response);
+    //     })
+    //     .catch((error)=>{
+    //       console.log("error:", error);
+    //     });
+    //   },[getAccountLoader]);
+    
+    // const {data, isPending, isError, error} = useQuery({
+    //     queryKey: ["orders", {userId: user ? user.id : null}],
+    //     queryFn : ({signal})=>{
+    //    const user = await getUser();
+    //         fetchOrders({signal, userId: user ? user.id : null})
+    //     },
+    // })
+
+    function handleChangeQty(inputText) {
+        setQty(inputText);
+    }
+            
+    const [data, setData] = useState([]);
+
+    useEffect(()=>{
+        async function fetchOrdersData(){
+            const user = await getUser();
+            const response = await fetch(
+                `http://192.168.31.161:8080/api/orders/user/${user.id}/orders`
+            );
+            
+            if(!response.ok){
+                console.error("Failed to fetch orders");
+            }else{
+                const resData = await response.json();
+                setData(resData.orderItems);
+            }
+        }
+
+        fetchOrdersData();
+    },[getUser]);
+
+    const isDesignExistInOrders = data ? data.findIndex((orderItem)=>{
+        return orderItem.design.id === item.id
+    }) >= 0 : false;
+
+    const {mutate: mutateCart, isPending: addToCartIsPending} = useMutation({
+        mutationFn: postCart,
+        onSuccess: ()=>{
+          queryClientObj.invalidateQueries({
+            queryKey: ["cart"],
+          })
+        },
+        onError: (err)=>{
+          Alert.alert("Failed to add to cart!", `${err.errorMessage}`, [{text: "OK", style: "cancel"}])
+        }
+    })
+
+    const {mutate: orderMutate, isPending: orderNowIsPending} = useMutation({
+        mutationFn: postOrder,
+        onSuccess: ()=>{
+          queryClientObj.invalidateQueries({
+            queryKey: ["orders"],
+          })
+        },
+        onError: (err)=>{
+            Alert.alert("Failed to order!", `${err.errorMessage}`, [{text: "OK", style: "cancel"}])
+        }
+      })
+    
+    async function handleOrderNow(){
+        const user =await getUser();
+        const account =await getAccountLoader();
+    
+        orderMutate({ userId: user.id, accountId: account.id, orderItems: [{designId: item.id, quantity: +qty }]});
+    }
 
     function handleGoBack(){
         setDesignItem();
         dispatch(uiActions.closeCatalogueDesignDetails());
+    }
+
+    async function handleAddToCart(){
+        const user = await getUser();
+        const account = await getAccountLoader();
+        mutateCart({userId: user.id, accountId: account.id, cartItems: [{designId: item.id, quantity: +qty}]});
+    }
+
+    const isInvalidQty = qty.trim().length === 0 || +qty === 0;
+
+    let orderNowBtnTitle = "Order Now";
+
+    if(orderNowIsPending){
+        orderNowBtnTitle = "Ordering...";
+    }
+    if(isDesignExistInOrders){
+        orderNowBtnTitle = "Ordered";
     }
 
   return (
@@ -21,14 +139,18 @@ const CatalogueDetails = ({item, setDesignItem}) => {
         <View style={styles.backBtn}>
             <Button title='Back' onPress={handleGoBack}/>
         </View>
-        <Text style={styles.heading}>Design {item.id}</Text>
+        {/* <Text style={styles.heading}>Design {item.id}</Text> */}
         <CarouselCards data={item.designImages}/>
+        <View style={styles.quantityContainer}>
+            <Text style={styles.quantityLabel}>Quantity : </Text>
+            <TextInput keyboardType="number-pad" value={qty} onChangeText={handleChangeQty} style={styles.quantityInput} />
+        </View>
         <View style={styles.actions}>
             <View style={styles.actionBtn}>
-                <Button title='Add to cart' color="#fdab31" />
+                <Button title={addToCartIsPending ? 'Adding...' : 'Add to cart'} color="#fdab31" disabled={isInvalidQty || addToCartIsPending} onPress={handleAddToCart} />
             </View>
             <View style={styles.actionBtn}>
-                <Button title='Order now' color="brown" />
+                <Button title={orderNowBtnTitle} color={isDesignExistInOrders ? "#78a578" : "brown"} disabled={isInvalidQty || isDesignExistInOrders || orderNowIsPending} onPress={handleOrderNow}  />
             </View>
         </View>
         <View style={styles.infoContainer}>
@@ -123,4 +245,27 @@ const styles = StyleSheet.create({
     infoText:{
         fontSize: 15,
     },
+    quantityContainer: {
+        flexDirection: "row",
+        gap: 8,
+        alignItems: "center",
+        justifyContent: "center",
+        marginHorizontal: 20,
+        marginVertical: 8,
+    },
+    quantityLabel: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        // flex: 1,
+        color: "maroon",
+    },
+    quantityInput: {
+        width: 50,
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        borderWidth: 1,
+        fontSize: 18,
+        fontWeight: 'bold',
+        borderColor: "maroon",
+    }
 })

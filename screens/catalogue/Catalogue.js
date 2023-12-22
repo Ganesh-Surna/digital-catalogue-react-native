@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Image, Pressable } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { fetchCatalogueDesigns } from "../../util/http";
 import { useQuery } from "@tanstack/react-query";
 import { FlatList } from "react-native-gesture-handler";
@@ -8,18 +8,24 @@ import CatalogueDetails from "../../components/catalogue/CatalogueDetails";
 import { useDispatch, useSelector } from "react-redux";
 import { uiActions } from "../../store/ui-slice";
 
-const Catalogue = () => {
+const Catalogue = ({navigation}) => {
   const dispatch = useDispatch()
   const [account, setAccount] = useState(null);
   const [designItem, setDesignItem] = useState();
 
   const isCatalogueDesignDetailsOpen = useSelector(state => state.ui.isCatalogueDesignDetailsOpen);
+
+  useLayoutEffect(()=>{
+    navigation.setOptions({
+      title: designItem ? `Design ${designItem.id} Details` : "Catalogue"
+    });
+  },[navigation,designItem]);
   
   useEffect(()=>{
     getAccountLoader()
     .then((response)=>{
-      console.log("resonse:", response);
-      console.log("parsed response:", typeof response)
+      // console.log("resonse:", response);
+      // console.log("parsed response:", typeof response)
       setAccount(response);
     })
     .catch((error)=>{
@@ -27,7 +33,7 @@ const Catalogue = () => {
     });
   },[getAccountLoader]);
 
-  console.log("account data loaded", account);
+  // console.log("account data loaded", account);
 
   const { data, isPending, isError, error } = useQuery({
     queryKey: ["catalogueDesigns",{accountId: account ? account.id : null}],

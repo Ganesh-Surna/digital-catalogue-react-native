@@ -9,13 +9,13 @@ export function getPermissionsObj() {
   return permissionsObj;
 }
 
-export function getUserId() {
-  const userId = JSON.parse(localStorage.getItem("USER_ID"));
+export async function getUser() {
+  const user = await AsyncStorage.getItem("USER");
 
-  if (!userId) {
+  if (!user) {
     return null;
   }
-  return userId;
+  return JSON.parse(user);
 }
 
 export async function getAccountLoader() {
@@ -24,8 +24,8 @@ export async function getAccountLoader() {
   if (!account) {
     return null;
   }
-  console.log("account data loaded in auth.js:", account);
-  console.log("account type is", typeof account);
+  // console.log("account data loaded in auth.js:", account);
+  // console.log("account type is", typeof account);
   return JSON.parse(account);
 }
 

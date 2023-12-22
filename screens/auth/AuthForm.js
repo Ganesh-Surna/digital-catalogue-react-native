@@ -30,7 +30,7 @@ const AuthForm = ({ navigation, route }) => {
       console.log("before syncstorage")
       // console.log("data is:",data);
       AsyncStorage.setItem("ACCOUNT", JSON.stringify(data.account));
-      AsyncStorage.setItem("USER_ID", JSON.stringify(data.id));
+      AsyncStorage.setItem("USER", JSON.stringify(data));
       AsyncStorage.setItem("TOKEN", data.token);
       AsyncStorage.setItem("FULL_NAME", data.firstName + " " + data.lastName);
       AsyncStorage.setItem("USER_NAME", data.userName);
