@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, useWindowDimensions } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { fetchCart } from '../../util/http'
@@ -7,6 +7,7 @@ import { FlatList } from 'react-native-gesture-handler'
 import CartItem from '../../components/cart/CartItem'
 
 const Cart = () => {
+  const {width, height} = useWindowDimensions();
     const [user, setUser] = useState(null);
 
     useEffect(()=>{
@@ -53,7 +54,7 @@ const Cart = () => {
             const cartId = data.id;
             console.log("cartId: ", cartId)
             content = <>
-                <FlatList data={data.cartItems} keyExtractor={(item)=>item.id} renderItem={(itemData)=><CartItem item={itemData.item} cartId={data.id} />} />
+                <FlatList key={width>height} numColumns={width>height ? 2 : 1} data={data.cartItems} keyExtractor={(item)=>item.id} renderItem={(itemData)=><CartItem item={itemData.item} cartId={data.id} />} />
             </>
         }
         else{
@@ -74,5 +75,6 @@ const styles = StyleSheet.create({
       flex: 1,
       padding: 10,
       alignItems: 'center',
+      alignSelf: 'center',
     },
 });

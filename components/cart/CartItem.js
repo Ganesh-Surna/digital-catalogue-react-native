@@ -1,10 +1,11 @@
-import { View, Text, StyleSheet, Image, Pressable} from 'react-native'
+import { View, Text, StyleSheet, Image, Pressable, useWindowDimensions} from 'react-native'
 import React, { useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
 import { deleteCart, queryClientObj, updateCart } from '../../util/http'
-import { AntDesign, Ionicons} from "@expo/vector-icons"
+import { EvilIcons, Ionicons} from "@expo/vector-icons"
 
 const CartItem = ({item, cartId}) => {
+  const {width, height} = useWindowDimensions();
 
   const {mutate, isError, isPending, error} = useMutation({
     mutationFn: deleteCart,
@@ -32,21 +33,21 @@ const {mutate: updateMutate, isError: updateIsError, isPending: updateIsPending,
 
 function handleMinus(){
   const updatedQuantity = item.quantity - 1;
-  console.log(item.quantity)
-  console.log(typeof item.quantity);
-  console.log(updatedQuantity)
-  console.log(typeof updatedQuantity);
-  console.log({cartId, cartItemId: item.id, data: {designId: item.design.id, quantity: updatedQuantity}});
+  // console.log(item.quantity)
+  // console.log(typeof item.quantity);
+  // console.log(updatedQuantity)
+  // console.log(typeof updatedQuantity);
+  // console.log({cartId, cartItemId: item.id, data: {designId: item.design.id, quantity: updatedQuantity}});
   updateMutate({cartId, cartItemId: item.id, data: {designId: item.design.id, quantity: updatedQuantity}})
 }
 
 function handlePlus() {
   const updatedQuantity = item.quantity + 1;
-  console.log(item.quantity)
-  console.log(typeof item.quantity);
-  console.log(updatedQuantity)
-  console.log(typeof updatedQuantity);
-  console.log({cartId, cartItemId: item.id, data: {designId: item.design.id, quantity: updatedQuantity}});
+  // console.log(item.quantity)
+  // console.log(typeof item.quantity);
+  // console.log(updatedQuantity)
+  // console.log(typeof updatedQuantity);
+  // console.log({cartId, cartItemId: item.id, data: {designId: item.design.id, quantity: updatedQuantity}});
   updateMutate({cartId, cartItemId: item.id, data: {designId: item.design.id, quantity: updatedQuantity}})
 }
 
@@ -56,7 +57,7 @@ function handleRemoveWholeItemFromCart(){
 
   return (
     // <View style={styles.screen}>
-      <View style={styles.cartItem}>
+    <View style={[styles.cartItem,{width: width > height ? "auto" : "100%", marginHorizontal: width > height ? 10 : 0,}]}>
 
       <Image source={{ uri: item.design.designImages[0] ? item.design.designImages[0].preSignedURL : null }} style={styles.productImage} />
       <View style={styles.productInfo}>
@@ -64,24 +65,26 @@ function handleRemoveWholeItemFromCart(){
         <Text style={styles.price}>₹30,499.00</Text>
       </View>
       
-      <View>
-        <Pressable android_ripple={{color: "rgb(168, 165, 165)"}} onPress={item.quantity === 1 ? handleRemoveWholeItemFromCart : handleMinus}>
-          <Ionicons name="ios-remove-circle-outline" size={24} color="black" />
-        </Pressable>
-      </View>
-      <View>
-        <Text style={styles.quantity}>x {item.quantity}</Text>
-      </View>
-      <View style={{marginRight: 50}}>
-        <Pressable android_ripple={{color: "rgb(168, 165, 165)"}} onPress={handlePlus}>
-          <Ionicons name="add-circle-outline" size={24} color="black" />
-        </Pressable>
+      <View style={styles.actionsAndQty}>
+        <View>
+          <Pressable android_ripple={{color: "rgb(168, 165, 165)"}} onPress={item.quantity === 1 ? handleRemoveWholeItemFromCart : handleMinus}>
+            <Ionicons name="ios-remove-circle-outline" size={24} color="black" />
+          </Pressable>
+        </View>
+        <View>
+          <Text style={styles.quantity}>x {item.quantity}</Text>
+        </View>
+        <View style={{marginRight: 20}}>
+          <Pressable android_ripple={{color: "rgb(168, 165, 165)"}} onPress={handlePlus}>
+            <Ionicons name="add-circle-outline" size={24} color="black" />
+          </Pressable>
+        </View>
       </View>
 
       <Pressable android_ripple={{color: "rgb(168, 165, 165)"}} onPress={handleRemoveWholeItemFromCart}>
-        <AntDesign name="delete" size={25} color="rgb(143, 5, 5)"/>
+        <EvilIcons name="trash" size={35} color="rgb(143, 5, 5)"/>
       </Pressable>
-      </View>
+    </View>
     // </View>
   )
 }
@@ -95,6 +98,7 @@ const styles = StyleSheet.create({
         width: "100%",
     },
     cartItem: {
+      // flex: 1,
       flexDirection: 'row',
       alignItems: 'center',
       borderBottomWidth: 1,
@@ -105,7 +109,11 @@ const styles = StyleSheet.create({
       marginBottom: 10,
       elevation: 4,
       width: "100%",
-      justifyContent: "space-evenly"
+      justifyContent: "space-between",
+    },
+    actionsAndQty: {
+      flexDirection: 'row',
+      gap: 5,
     },
     productImage: {
       width: 80,
@@ -113,19 +121,19 @@ const styles = StyleSheet.create({
       // marginRight: 10,
     },
     productInfo: {
-      marginRight: 50
+      marginRight: 50,
     },
     productName: {
-      fontSize: 18,
-      fontWeight: '500',
+      fontSize: 20,
+      fontWeight: '600',
       color: 'rgb(163, 4, 137)'
     },
     productDescription: {
       color: '#777',
     },
     quantity: {
-      paddingVertical: 2,
-      paddingHorizontal:4,
+      paddingVertical: 4,
+      paddingHorizontal:8,
       fontSize: 18,
       borderRadius: 4,
       borderWidth: 1,
@@ -139,10 +147,10 @@ const styles = StyleSheet.create({
       color: 'green',
     },
     removeButton: {
-      marginLeft: 'auto',
-      padding: 5,
+      // marginLeft: 'auto',
+      // padding: 5,
     },
     removeButtonText: {
-      color: '#e44d26',
+      color: '#e62e00',
     },
 });

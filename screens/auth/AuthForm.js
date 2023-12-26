@@ -1,4 +1,4 @@
-import { View, Text, Button, TextInput, StyleSheet, Alert } from "react-native";
+import { View, Text, Button, TextInput, StyleSheet, Alert, useWindowDimensions } from "react-native";
 import React, { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { login } from "../../util/http";
@@ -6,7 +6,11 @@ import IonIcons from "@expo/vector-icons/Ionicons";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+
 const AuthForm = ({ navigation, route }) => {
+
+  const {width, height} = useWindowDimensions();
+
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState();
@@ -62,7 +66,7 @@ const AuthForm = ({ navigation, route }) => {
 }
 
   return (
-    <View style={styles.form}>
+    <View style={[styles.form, {width: width > height ? "50%" : "100%",}]}>
       {errorMsg && <Text style={styles.err}>{`( ${errorMsg} )`}</Text>}
       <View style={styles.inputGrp}>
         <Text style={styles.label}>Username</Text>
@@ -100,7 +104,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 30,
     gap: 18,
-    // justifyContent: 'center',
+    alignSelf: 'center',
   },
   inputGrp: {
     width: "100%",

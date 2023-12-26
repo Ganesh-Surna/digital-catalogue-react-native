@@ -1,4 +1,4 @@
-import { View, Text, Button, Image, StyleSheet, ScrollView, TextInput, Alert } from 'react-native'
+import { View, Text, Button, Image, StyleSheet, ScrollView, TextInput, Alert, useWindowDimensions } from 'react-native'
 import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { uiActions } from '../../store/ui-slice';
 import { useDispatch } from 'react-redux';
@@ -12,6 +12,8 @@ import { fetchCart, fetchOrders, postCart, postOrder, queryClientObj } from '../
 import { getAccountLoader, getUser } from '../../util/auth';
 
 const CatalogueDetails = ({item, setDesignItem}) => {
+    const {width, height} = useWindowDimensions();
+
     const dispatch = useDispatch();
     const navigation = useNavigation()
 
@@ -149,14 +151,14 @@ const CatalogueDetails = ({item, setDesignItem}) => {
             <Button title='Back' onPress={handleGoBack}/>
         </View>
         {/* <Text style={styles.heading}>Design {item.id}</Text> */}
-        <View style={styles.imageContainer}>
+        <View style={[styles.imageContainer, {width: width>height ? "60%" : "100%"}]}>
             <CarouselCards data={item.designImages}/>
         </View>
         <View style={styles.quantityContainer}>
             <Text style={styles.quantityLabel}>Quantity : </Text>
             <TextInput keyboardType="number-pad" value={qty} onChangeText={handleChangeQty} style={styles.quantityInput} />
         </View>
-        <View style={styles.actions}>
+        <View style={[styles.actions, {width: width>height ? "70%" : "100%"}]}>
             <View style={styles.actionBtn}>
                 <Button title={addToCartIsPending ? 'Adding...' : 'Add to cart'} color="#fdab31" disabled={isInvalidQty || addToCartIsPending} onPress={handleAddToCart} />
             </View>
@@ -215,6 +217,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         marginHorizontal: 20,
         marginVertical: 8,
+        alignSelf: 'center',
     },
     actionBtn: {
         flex: 1,

@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, Pressable } from "react-native";
+import { View, Text, StyleSheet, Image, Pressable, useWindowDimensions } from "react-native";
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import { fetchCatalogueDesigns } from "../../util/http";
 import { useQuery } from "@tanstack/react-query";
@@ -9,6 +9,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { uiActions } from "../../store/ui-slice";
 
 const Catalogue = ({navigation}) => {
+  const {width, height} = useWindowDimensions();
+
   const dispatch = useDispatch()
   const [account, setAccount] = useState(null);
   const [designItem, setDesignItem] = useState();
@@ -72,9 +74,10 @@ const Catalogue = ({navigation}) => {
   if (data) {
     content = (
       <FlatList
+        key={width > height}
         data={data}
         keyExtractor={(item) => item.id}
-        numColumns={2}
+        numColumns={width > height ? 4 : 2}
         renderItem={(itemData) => renderItemFn(itemData.item)}
       />
     );
@@ -86,7 +89,7 @@ const Catalogue = ({navigation}) => {
   }
 
 
-  return <View style={styles.screen}>{content}</View>;
+  return <View style={[styles.screen, {width: "100%"}]}>{content}</View>;
 };
 
 export default Catalogue;
