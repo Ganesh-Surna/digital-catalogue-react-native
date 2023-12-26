@@ -37,7 +37,7 @@ const Catalogue = ({navigation}) => {
 
   const { data, isPending, isError, error } = useQuery({
     queryKey: ["catalogueDesigns",{accountId: account ? account.id : null}],
-    queryFn: ({ signal }) => fetchCatalogueDesigns({ signal, accountId: account.id }),
+    queryFn: ({ signal }) => account ? fetchCatalogueDesigns({ signal, accountId: account.id }) : {},
   });
 
   let content = <Text>No designs in catalogue</Text>;
@@ -51,7 +51,7 @@ const Catalogue = ({navigation}) => {
     return (
       <Pressable android_ripple={{color: "#f3f3f3"}} style={({pressed})=>[styles.container, pressed && styles.pressDesign]} onPress={()=>handleShowDesignDetails(item)}>
         <View>
-            <Image source={{ uri: item.designImages[0].preSignedURL }} style={styles.image} />
+            <Image source={{ uri: item.designImages[0] ? item.designImages[0].preSignedURL : null }} style={styles.image} />
         </View>
         <View style={{paddingVertical: 8, gap: 6, paddingHorizontal: 12}}>
           <Text style={[styles.title]}>Design {item.id}</Text>

@@ -17,68 +17,77 @@ const CatalogueDetails = ({item, setDesignItem}) => {
 
     const [qty, setQty] = useState("1");
 
-    // const [user, setUser] = useState(null);
-    // const [account, setAccount] = useState(null); 
+    const [user, setUser] = useState(null);
+    const [account, setAccount] = useState(null); 
 
-    // useEffect(()=>{
-    //     getUser()
-    //     .then((response)=>{
-    //     //   console.log("resonse:", response);
-    //     //   console.log("parsed response:", typeof response)
-    //     setUser(response);
-    //     })
-    //     .catch((error)=>{
-    //       console.log("error:", error);
-    //     });
-    // },[getUser]);
+    useEffect(()=>{
+        getUser()
+        .then((response)=>{
+        //   console.log("resonse:", response);
+        //   console.log("parsed response:", typeof response)
+        setUser(response);
+        })
+        .catch((error)=>{
+          console.log("error:", error);
+        });
+    },[getUser]);
 
-    // useEffect(()=>{
-    //     getAccountLoader()
-    //     .then((response)=>{
-    //       // console.log("resonse:", response);
-    //       // console.log("parsed response:", typeof response)
-    //       setAccount(response);
-    //     })
-    //     .catch((error)=>{
-    //       console.log("error:", error);
-    //     });
-    //   },[getAccountLoader]);
+    useEffect(()=>{
+        getAccountLoader()
+        .then((response)=>{
+          // console.log("resonse:", response);
+          // console.log("parsed response:", typeof response)
+          setAccount(response);
+        })
+        .catch((error)=>{
+          console.log("error:", error);
+        });
+      },[getAccountLoader]);
     
-    // const {data, isPending, isError, error} = useQuery({
-    //     queryKey: ["orders", {userId: user ? user.id : null}],
-    //     queryFn : ({signal})=>{
-    //    const user = await getUser();
-    //         fetchOrders({signal, userId: user ? user.id : null})
-    //     },
-    // })
+    const {data, isPending, isError, error} = useQuery({
+        queryKey: ["orders", {userId: user ? user.id : null}],
+        queryFn : ({signal})=> user ? fetchOrders({signal, userId: user ? user.id : null}) : {},
+    })
+
+    console.log("orders data in catalogueDetails:", data);
 
     function handleChangeQty(inputText) {
         setQty(inputText);
     }
             
-    const [data, setData] = useState([]);
+    // const [data, setData] = useState([]);
 
-    useEffect(()=>{
-        async function fetchOrdersData(){
-            const user = await getUser();
-            const response = await fetch(
-                `http://192.168.31.161:8080/api/orders/user/${user.id}/orders`
-            );
+    // useEffect(()=>{
+    //     async function fetchOrdersData(){
+    //         const user = await getUser();
+    //         const response = await fetch(
+    //             `http://192.168.1.35:8080/api/orders/user/${user.id}/orders`
+    //         );
             
-            if(!response.ok){
-                console.error("Failed to fetch orders");
-            }else{
-                const resData = await response.json();
-                setData(resData.orderItems);
-            }
+    //         if(!response.ok){
+    //             console.error("Failed to fetch orders");
+    //         }else{
+    //             const resData = await response.json();
+    //             setData(resData.orderItems);
+    //         }
+    //     }
+
+    //     fetchOrdersData();
+    // },[getUser]);
+
+    let isDesignExistInOrders ;
+
+    if(data){
+        if(data.length > 0){
+            isDesignExistInOrders = data.findIndex((order)=>{
+                const isExist = order.orderItems.findIndex((orderItem)=>orderItem.design.id ===item.id ) >= 0;
+                return isExist;
+              }) >= 0;
         }
-
-        fetchOrdersData();
-    },[getUser]);
-
-    const isDesignExistInOrders = data ? data.findIndex((orderItem)=>{
-        return orderItem.design.id === item.id
-    }) >= 0 : false;
+        else{
+            isDesignExistInOrders = false;
+        }
+    }
 
     const {mutate: mutateCart, isPending: addToCartIsPending} = useMutation({
         mutationFn: postCart,
@@ -140,7 +149,9 @@ const CatalogueDetails = ({item, setDesignItem}) => {
             <Button title='Back' onPress={handleGoBack}/>
         </View>
         {/* <Text style={styles.heading}>Design {item.id}</Text> */}
-        <CarouselCards data={item.designImages}/>
+        <View style={styles.imageContainer}>
+            <CarouselCards data={item.designImages}/>
+        </View>
         <View style={styles.quantityContainer}>
             <Text style={styles.quantityLabel}>Quantity : </Text>
             <TextInput keyboardType="number-pad" value={qty} onChangeText={handleChangeQty} style={styles.quantityInput} />
@@ -150,7 +161,7 @@ const CatalogueDetails = ({item, setDesignItem}) => {
                 <Button title={addToCartIsPending ? 'Adding...' : 'Add to cart'} color="#fdab31" disabled={isInvalidQty || addToCartIsPending} onPress={handleAddToCart} />
             </View>
             <View style={styles.actionBtn}>
-                <Button title={orderNowBtnTitle} color={isDesignExistInOrders ? "#78a578" : "brown"} disabled={isInvalidQty || isDesignExistInOrders || orderNowIsPending} onPress={handleOrderNow}  />
+                <Button title={orderNowBtnTitle} color={isDesignExistInOrders ? "#71a171" : "brown"} disabled={isInvalidQty || isDesignExistInOrders || orderNowIsPending} onPress={handleOrderNow}  />
             </View>
         </View>
         <View style={styles.infoContainer}>
@@ -267,5 +278,9 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
         borderColor: "maroon",
+    },
+    imageContainer: {
+        width: "100%",
+        height: 200,
     }
 })

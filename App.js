@@ -105,17 +105,6 @@ export default function App() {
 
   const [account, setAccount] = useState(null);
 
-  useEffect(()=>{
-    getAccountLoader()
-    .then((response)=>{
-      console.log("resonse:", response);
-      console.log("parsed response:", typeof response)
-      setAccount(response);
-    })
-    .catch((error)=>{
-      console.log("error:", error);
-    });
-  },[getAccountLoader]);
 
   return (
     <>
@@ -123,7 +112,7 @@ export default function App() {
       <Provider store={store}>
         <QueryClientProvider client={queryClientObj}>
           <NavigationContainer>
-            <Stack.Navigator initialRouteName={account ? "catalogue-drawer" : "auth"} screenOptions={{
+            <Stack.Navigator screenOptions={{
               headerTitleAlign: "center",
               headerStyle: {backgroundColor: "#eccaca"}
             }}>
