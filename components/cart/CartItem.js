@@ -57,7 +57,7 @@ function handleRemoveWholeItemFromCart(){
 
   return (
     // <View style={styles.screen}>
-    <View style={[styles.cartItem,{width: width > height ? "auto" : "100%", marginHorizontal: width > height ? 10 : 0,}]}>
+    <View style={[styles.cartItem,{width: width > height ? "auto" : "auto", marginHorizontal: width > height ? 10 : 0,}]}>
 
       <Image source={{ uri: item.design.designImages[0] ? item.design.designImages[0].preSignedURL : null }} style={styles.productImage} />
       <View style={styles.productInfo}>
@@ -108,7 +108,12 @@ const styles = StyleSheet.create({
       padding: 10,
       marginBottom: 10,
       elevation: 4,
-      width: "100%",
+      shadowColor: "black",
+      shadowOffset: {width: 1, height: 1},
+      shadowRadius: 4,
+      shadowOpacity: 0.25,
+      borderRadius: 8,
+      width: "50%",
       justifyContent: "space-between",
     },
     actionsAndQty: {

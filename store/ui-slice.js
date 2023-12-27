@@ -4,6 +4,7 @@ const initialUiState = {
   isDrawerOpen: false,
   isDesignDetailsOpen: false,
   isCatalogueDesignDetailsOpen: false,
+  isViewOrderItemsOpen: false,
   selectedFilters: [],
   filters: {
     "mainGrpFilter": false,
@@ -77,6 +78,12 @@ const uiSlice = createSlice({
     closeCatalogueDesignDetails(state){
         state.isCatalogueDesignDetailsOpen= false;
     },
+    openViewOrderItems(state){
+        state.isViewOrderItemsOpen= true;
+    },
+    closeViewOrderItems(state){
+        state.isViewOrderItemsOpen= false;
+    }
   }
 });
 

@@ -1,14 +1,15 @@
-import { View, Text, StyleSheet, useWindowDimensions } from 'react-native'
+import { View, Text, StyleSheet, useWindowDimensions, Button, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
-import { fetchCart } from '../../util/http'
+import { useQuery, useMutation } from '@tanstack/react-query'
+import { fetchCart, postOrder, queryClientObj } from '../../util/http'
 import { getAccountLoader, getUser } from '../../util/auth'
 import { FlatList } from 'react-native-gesture-handler'
 import CartItem from '../../components/cart/CartItem'
 
-const Cart = () => {
+const Cart = ({navigation}) => {
   const {width, height} = useWindowDimensions();
     const [user, setUser] = useState(null);
+    
 
     useEffect(()=>{
         getUser()
@@ -34,7 +35,7 @@ const Cart = () => {
     //         const user = await getUser();
     //         // const account = await getAccountLoader();
     //         const response = await fetch(
-    //             `http://192.168.31.161:8080/api/carts/user/${user.id}/cart`
+    //             http://192.168.31.161:8080/api/carts/user/${user.id}/cart
     //         );
 
     //         if(!response.ok){
@@ -48,12 +49,41 @@ const Cart = () => {
     //     fetchCartData();
     // },[getUser])
 
+    const {mutate: orderMutate, isPending: orderIsPendign, isError: orderIsError, error: orderError} = useMutation({
+        mutationFn: postOrder,
+        onSuccess: ()=>{
+            queryClientObj.invalidateQueries({
+                queryKey: ["orders"],
+            })
+            queryClientObj.invalidateQueries({
+                queryKey: ["cart"],
+            })
+            // navigation.navigate("orders");
+        },
+        onError: (errData)=>{
+          Alert.alert("Failed to order", `${errData.errorMessage}`, [{text: "Okay", style: "cancel"}]);
+      }
+    })
+
+    async function handleOrder(){
+      const account = await getAccountLoader();
+      const userObj = await getUser();
+        const mappedList = data.cartItems.map(item => ({designId: item.design.id, quantity: item.quantity}));
+
+        console.log("mappedList of ordering cart items", mappedList);
+        orderMutate({ userId: userObj.id, accountId: account.id, orderItems: [...mappedList], cartId: data.id });
+    }
+
+
     console.log(data)
 
         if( data && data.cartItems?.length > 0){
             const cartId = data.id;
             console.log("cartId: ", cartId)
             content = <>
+                <View style={styles.backBtn}>
+                  <Button title='Order Now' onPress={handleOrder}/>
+                </View>
                 <FlatList key={width>height} numColumns={width>height ? 2 : 1} data={data.cartItems} keyExtractor={(item)=>item.id} renderItem={(itemData)=><CartItem item={itemData.item} cartId={data.id} />} />
             </>
         }
@@ -77,4 +107,10 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       alignSelf: 'center',
     },
+    backBtn: {
+      width: 100,
+      margin: 8,
+      marginLeft: 15,
+      alignSelf: 'flex-end'
+    }
 });

@@ -151,14 +151,14 @@ const CatalogueDetails = ({item, setDesignItem}) => {
             <Button title='Back' onPress={handleGoBack}/>
         </View>
         {/* <Text style={styles.heading}>Design {item.id}</Text> */}
-        <View style={[styles.imageContainer, {width: width>height ? "60%" : "100%"}]}>
+        <View style={[styles.imageContainer, {width: width>height ? "60%" : "90%"}]}>
             <CarouselCards data={item.designImages}/>
         </View>
         <View style={styles.quantityContainer}>
             <Text style={styles.quantityLabel}>Quantity : </Text>
             <TextInput keyboardType="number-pad" value={qty} onChangeText={handleChangeQty} style={styles.quantityInput} />
         </View>
-        <View style={[styles.actions, {width: width>height ? "70%" : "100%"}]}>
+        <View style={[styles.actions, {width: width>height ? "70%" : "90%"}]}>
             <View style={styles.actionBtn}>
                 <Button title={addToCartIsPending ? 'Adding...' : 'Add to cart'} color="#fdab31" disabled={isInvalidQty || addToCartIsPending} onPress={handleAddToCart} />
             </View>
