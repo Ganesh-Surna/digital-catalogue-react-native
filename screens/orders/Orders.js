@@ -114,7 +114,7 @@ const Orders = ({ navigation }) => {
       >
         <Text
           style={{
-            textAlign: 'left',
+            // textAlign: 'left',
             fontSize: 20,
             color: "rgb(163, 4, 137)",
             fontWeight: 600,
@@ -130,7 +130,9 @@ const Orders = ({ navigation }) => {
           'https://cdn.pixabay.com/photo/2017/06/02/12/04/chain-2366132_1280.jpg'*/ }
         </View>
         
-        <AntDesign name="arrowright" style={[styles.arrow]} size={25} />
+        <View>
+          <AntDesign name="arrowright" color={"rgb(163, 4, 137)"} size={25} />
+        </View>
       </Pressable>
     );
   }
@@ -201,7 +203,7 @@ const styles = StyleSheet.create({
     width: "44.5%",
     // minWidth: "90%",
     margin: 10,
-    justifyContent: "center",
+    justifyContent: "space-around",
     alignItems: "center",
     height: 150,
     elevation: 4,

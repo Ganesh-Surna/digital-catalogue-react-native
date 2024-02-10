@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
         borderRadius:8,
         padding: 8, 
         backgroundColor: '#d5f0f7',
-        backgroundColor: '#dbfcd8',
+        backgroundColor: 'rgba(5, 248, 106, 0.15)',
         marginBottom: 10,
     },
     container:{
