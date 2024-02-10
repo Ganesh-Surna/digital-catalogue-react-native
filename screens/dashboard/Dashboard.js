@@ -2,16 +2,11 @@ import { fetchCatalogueDesigns, fetchOrderedDesignsForUser, fetchAccountOrdersFo
 import { getAccountLoader, getUser } from "../../util/auth";
 import {View, Text, StyleSheet, FlatList, Image, useWindowDimensions, ScrollView} from 'react-native';
 import { useQuery } from "@tanstack/react-query";
+import {BarChart} from "react-native-gifted-charts"
 import { useEffect, useState } from "react";
 
 export default function Dashboard() {
-    const [screenHeight, setScreenHeight] = useState(0)
-    const onContentSizeChange = (contentWidth, contentHeight) =>setScreenHeight(contentHeight);
-
     const {width, height} =useWindowDimensions();
-
-    const scrollEnabled = screenHeight > height;
-
     //const {accountType, id: accountId} = getAccountLoader();
     //const user = getUser();
     //const userId= user ? user.id : null;
@@ -117,15 +112,15 @@ const {data: accountOrdersData} = useQuery({
                 </View>
             </View>
             <View style={[styles.chartAndOrdersContainer,{flexDirection: width > height ? "row" : "column",width: width>height ? '99.5%': '96%',}]}>
-            <View style={[styles.container, {width: width>height ? '50%': '200%'}]}>
+            <View style={[styles.barContainer, {width: width>height ? '50%': '100%'}]}>
                 <View>
                     <Text style={styles.title}>Orders by Retailers</Text>
                 </View>
-                <View style={{overflow: 'auto', width: "100%", flex: 1}}>
-                    {/* <BarChart
+                <View style={{width: "100%", flex: 1}}>
+                    <BarChart
                         isAnimated
                         height={200}
-                        width={300}
+                        width={325}
                         barWidth={50}
                         noOfSections={5}
                         barBorderRadius={2}
@@ -133,7 +128,7 @@ const {data: accountOrdersData} = useQuery({
                         data={barData}
                         yAxisThickness={1}
                         xAxisThickness={1}
-                    /> */}
+                    />
                 </View>
             </View>
             <ScrollView style={[styles.container, {width: width>height ? '50%': '100%'}]}>
@@ -187,7 +182,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     card: {
-        backgroundColor: '#ccc',
+        backgroundColor: '#d5f0f7',
         borderWidth:1,
         borderColor: 'black',
         borderRadius: 6,
@@ -225,6 +220,17 @@ const styles = StyleSheet.create({
         padding: 8,
         fontWeight: '800'
     },
+    barContainer:{
+        width: '100%',
+        alignSelf: "stretch",
+        flex: 1,
+        borderWidth: 1,
+        borderRadius:8,
+        padding: 8, 
+        backgroundColor: '#d5f0f7',
+        backgroundColor: '#dbfcd8',
+        marginBottom: 10,
+    },
     container:{
         width: '100%',
         alignSelf: "stretch",
@@ -232,7 +238,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius:8,
         padding: 8, 
-        backgroundColor: '#ccc',
+        backgroundColor: '#d5f7e9',
         marginBottom: 10,
     },
     orderCard: {
