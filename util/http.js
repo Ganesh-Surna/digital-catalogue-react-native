@@ -3,7 +3,7 @@ import { QueryClient } from "@tanstack/react-query";
 export const queryClientObj = new QueryClient();
 
 export async function login(formData){
-    const response = await fetch('http://192.168.31.161:8080/api/login', {
+    const response = await fetch('http://192.168.50.161:8080/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -28,7 +28,7 @@ export async function login(formData){
 }
 
 export async function fetchAllDesigns(){
-    const response = await fetch('http://192.168.31.161:8080/api/designs');
+    const response = await fetch('http://192.168.50.161:8080/api/designs');
     
     if(!response.ok){
         console.log("response status: " + response.status);
@@ -46,7 +46,7 @@ export async function fetchAllDesigns(){
 }
 
 export async function fetchCatalogueDesigns({accountId, signal}){
-    const response = await fetch(`http://192.168.31.161:8080/api/designs/filters?designs=assigned&accountId=${accountId}`, {signal: signal});
+    const response = await fetch(`http://192.168.50.161:8080/api/designs/filters?designs=assigned&accountId=${accountId}`, {signal: signal});
 
     if(!response.ok){
         console.log("response status: " + response.status);
@@ -64,7 +64,7 @@ export async function fetchCatalogueDesigns({accountId, signal}){
 }
 
 export async function fetchAssignedRetailers({cardItemId, signal}){
-    const response = await fetch(`http://192.168.31.161:8080/api/design-account/${cardItemId}/accounts`, {signal: signal});
+    const response = await fetch(`http://192.168.50.161:8080/api/design-account/${cardItemId}/accounts`, {signal: signal});
 
     if(!response.ok){
         console.log("response status: " + response.status);
@@ -83,7 +83,7 @@ export async function fetchAssignedRetailers({cardItemId, signal}){
 
   
   export async function updateDesignFields({cardItemId, updatedData}){
-    const response = await fetch(`http://192.168.31.161:8080/api/designs/${cardItemId}`, {
+    const response = await fetch(`http://192.168.50.161:8080/api/designs/${cardItemId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",  
@@ -108,7 +108,7 @@ export async function fetchAssignedRetailers({cardItemId, signal}){
 
 
   export async function addDesignSet({cardItemId, addedData}){
-    const response = await fetch(`http://192.168.31.161:8080/api/designs/${cardItemId}/details`,
+    const response = await fetch(`http://192.168.50.161:8080/api/designs/${cardItemId}/details`,
         {
         method: 'POST',
         headers: {
@@ -134,7 +134,7 @@ export async function fetchAssignedRetailers({cardItemId, signal}){
 
 
   export async function updateDesignSet({cardItemId, updatedData, detailsId}){
-     const response = await fetch(`http://192.168.31.161:8080/api/designs/${cardItemId}/details/${detailsId}`, {
+     const response = await fetch(`http://192.168.50.161:8080/api/designs/${cardItemId}/details/${detailsId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -159,12 +159,12 @@ export async function fetchAssignedRetailers({cardItemId, signal}){
 
 
   export async function assignRetailer({cardItemId, formattedData, edit, prevRetailerId, designAccountId}){
-    let url = `http://192.168.31.161:8080/api/design-account`;
+    let url = `http://192.168.50.161:8080/api/design-account`;
     let method = "POST";
 
     if(edit){
         // url = `http://localhost:8080/api/design-account/accounts/${prevRetailerId}/designs/${cardItemId}`;
-        url = `http://192.168.31.161:8080/api/design-account/${designAccountId}`;
+        url = `http://192.168.50.161:8080/api/design-account/${designAccountId}`;
 
         method = "PUT";
     }
@@ -195,7 +195,7 @@ export async function fetchAssignedRetailers({cardItemId, signal}){
 
   export async function removeRetailer(retailerId){
     const response = await fetch(
-      `http://192.168.31.161:8080/api/design-account/${retailerId}`,
+      `http://192.168.50.161:8080/api/design-account/${retailerId}`,
       {
         method: "DELETE",
       }
@@ -219,7 +219,7 @@ export async function fetchAssignedRetailers({cardItemId, signal}){
 
   export async function accountLogin(retailerId){
     const response = await fetch(
-      `http://192.168.31.161:8080/api/login`,
+      `http://192.168.50.161:8080/api/login`,
       {
         method: "POST",
         headers:{
@@ -246,7 +246,7 @@ export async function fetchAssignedRetailers({cardItemId, signal}){
 
   export async function fetchAccounts(){
     const response = await fetch(
-      `http://192.168.31.161:8080/api/accounts`
+      `http://192.168.50.161:8080/api/accounts`
     );
 
     if(!response.ok){
@@ -266,7 +266,7 @@ export async function fetchAssignedRetailers({cardItemId, signal}){
 
   export async function fetchAssignedDesigns(){
     const response = await fetch(
-      `http://192.168.31.161:8080/api/design-account`
+      `http://192.168.50.161:8080/api/design-account`
     );
 
     if(!response.ok){
@@ -288,7 +288,7 @@ export async function fetchAssignedRetailers({cardItemId, signal}){
 
   export async function postOrder(data){
     const response = await fetch(
-      `http://192.168.31.161:8080/api/orders`,
+      `http://192.168.50.161:8080/api/orders`,
       {
         method: "POST",
         headers:{
@@ -315,7 +315,7 @@ export async function fetchAssignedRetailers({cardItemId, signal}){
 
   export async function fetchOrders({signal, userId}){
     const response = await fetch(
-      `http://192.168.31.161:8080/api/orders/user/${userId}/orders`,{signal}
+      `http://192.168.50.161:8080/api/orders/user/${userId}/orders`,{signal}
     );
 
     if(!response.ok){
@@ -335,7 +335,7 @@ export async function fetchAssignedRetailers({cardItemId, signal}){
 
   export async function fetchRecentOrders({signal,max}){
     const response = await fetch(
-      `http://192.168.31.161:8080/api/orders/?pageSize=${max}`,{signal}
+      `http://192.168.50.161:8080/api/orders/?pageSize=${max}`,{signal}
     );
 
     if(!response.ok){
@@ -355,7 +355,7 @@ export async function fetchAssignedRetailers({cardItemId, signal}){
 
   export async function fetchOrdersForManufacturer(){
     const response = await fetch(
-      `http://192.168.31.161:8080/api/orders`
+      `http://192.168.50.161:8080/api/orders`
     );
 
     if(!response.ok){
@@ -375,7 +375,7 @@ export async function fetchAssignedRetailers({cardItemId, signal}){
 
   export async function deleteOrder({orderId, orderItemId}){
     const response = await fetch(
-      `http://192.168.31.161:8080/api/orders/${orderId}/orderItem/${orderItemId}`,{
+      `http://192.168.50.161:8080/api/orders/${orderId}/orderItem/${orderItemId}`,{
         method: "DELETE",
       }
     );
@@ -397,7 +397,7 @@ export async function fetchAssignedRetailers({cardItemId, signal}){
 
   export async function updateOrder({orderId, orderItemId, data}){
     const response = await fetch(
-      `http://192.168.31.161:8080/api/orders/${orderId}/orderItem/${orderItemId}`,{
+      `http://192.168.50.161:8080/api/orders/${orderId}/orderItem/${orderItemId}`,{
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -423,7 +423,7 @@ export async function fetchAssignedRetailers({cardItemId, signal}){
 
   export async function fetchCart({signal, userId}){
     const response = await fetch(
-      `http://192.168.31.161:8080/api/carts/user/${userId}/cart`,{signal}
+      `http://192.168.50.161:8080/api/carts/user/${userId}/cart`,{signal}
     );
 
     if(!response.ok){
@@ -443,7 +443,7 @@ export async function fetchAssignedRetailers({cardItemId, signal}){
 
   export async function postCart(data){
     const response = await fetch(
-      `http://192.168.31.161:8080/api/carts`,
+      `http://192.168.50.161:8080/api/carts`,
       {
         method: "POST",
         headers:{
@@ -470,7 +470,7 @@ export async function fetchAssignedRetailers({cardItemId, signal}){
 
   export async function deleteCart({cartId, cartItemId}){
     const response = await fetch(
-      `http://192.168.31.161:8080/api/carts/${cartId}/cartItem/${cartItemId}`,{
+      `http://192.168.50.161:8080/api/carts/${cartId}/cartItem/${cartItemId}`,{
         method: "DELETE",
       }
     );
@@ -492,7 +492,7 @@ export async function fetchAssignedRetailers({cardItemId, signal}){
 
   export async function updateCart({cartId, cartItemId, data}){
     const response = await fetch(
-      `http://192.168.31.161:8080/api/carts/${cartId}/cartItem/${cartItemId}`,{
+      `http://192.168.50.161:8080/api/carts/${cartId}/cartItem/${cartItemId}`,{
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -518,7 +518,7 @@ export async function fetchAssignedRetailers({cardItemId, signal}){
 
   export async function fetchAssignedDesignsForManufacturer(){
     const response = await fetch(
-      `http://192.168.31.161:8080/api/designs/filters?designs=assigned`
+      `http://192.168.50.161:8080/api/designs/filters?designs=assigned`
     );
 
     if(!response.ok){
@@ -538,7 +538,7 @@ export async function fetchAssignedRetailers({cardItemId, signal}){
 
   export async function fetchAccountOrdersForManufacturer(){
     const response = await fetch(
-      `http://192.168.31.161:8080/api/accounts/account-orders`
+      `http://192.168.50.161:8080/api/accounts/account-orders`
     );
 
     if(!response.ok){
@@ -558,7 +558,7 @@ export async function fetchAssignedRetailers({cardItemId, signal}){
 
   export async function fetchOrderedDesignsForUser({userId, signal}){
     const response = await fetch(
-      `http://192.168.31.161:8080/api/orders/user/${userId}/designs`,{signal}
+      `http://192.168.50.161:8080/api/orders/user/${userId}/designs`,{signal}
     );
 
     if(!response.ok){
@@ -578,7 +578,7 @@ export async function fetchAssignedRetailers({cardItemId, signal}){
 
   export async function fetchAssignedDesignsVsAccounts(){
     const response = await fetch(
-      `http://192.168.31.161:8080/api/accounts/account-designs`
+      `http://192.168.50.161:8080/api/accounts/account-designs`
     );
 
     if(!response.ok){
@@ -598,7 +598,7 @@ export async function fetchAssignedRetailers({cardItemId, signal}){
 
   export async function fetchAccountsVsUsersForSystem(){
     const response = await fetch(
-      `http://192.168.31.161:8080/api/accounts/account-users?accountType=manufacturer`
+      `http://192.168.50.161:8080/api/accounts/account-users?accountType=manufacturer`
     );
 
     if(!response.ok){
@@ -618,7 +618,7 @@ export async function fetchAssignedRetailers({cardItemId, signal}){
 
   export async function fetchAccountsForSystem(){
     const response = await fetch(
-      `http://192.168.31.161:8080/api/accounts/filters/?accountType=manufacturer`
+      `http://192.168.50.161:8080/api/accounts/filters/?accountType=manufacturer`
     );
 
     if(!response.ok){
@@ -638,7 +638,7 @@ export async function fetchAssignedRetailers({cardItemId, signal}){
 
   export async function fetchUsersForSystem(){
     const response = await fetch(
-      `http://192.168.31.161:8080/api/users/filters?accountType=manufacturer`
+      `http://192.168.50.161:8080/api/users/filters?accountType=manufacturer`
     );
 
     if(!response.ok){

@@ -23,6 +23,7 @@ import { uiActions } from './store/ui-slice';
 import UserInfo from './screens/user/UserInfo';
 import Cart from './screens/cart/Cart';
 import Orders from './screens/orders/Orders';
+import Dashboard from './screens/dashboard/Dashboard';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -76,16 +77,17 @@ const DrawerNavigatorFn = ()=>{
       headerTitleAlign: "left",
       headerStyle: {backgroundColor: "#eccaca"},
     })}>
+      <Drawer.Screen name="dashboard" component={Dashboard} options={{
+        title: "Dashboard",
+        drawerLabel: "Dashboard",
+        unmountOnBlur: true,
+        drawerIcon: ({size, color,focused})=><FontAwesome name="bar-chart" color={color} size={size}/>,
+      }} />
       <Drawer.Screen name="catalogue" component={Catalogue} options={{
         title: "Catalogue",
         drawerLabel: "Catalogue",
         unmountOnBlur: true,
         drawerIcon: ({size, color,focused})=><FontAwesome name="diamond" color={color} size={size}/>,
-      }} />
-      <Drawer.Screen name="user-info" component={UserInfo} options={{
-        title: "User Info",
-        drawerLabel: "User Info",
-        drawerIcon: ({size, color,focused})=><FontAwesome5 name="user-circle" size={size} color={color} />,
       }} />
       <Drawer.Screen name="cart" component={Cart} options={{
         title: "Cart",
@@ -96,6 +98,11 @@ const DrawerNavigatorFn = ()=>{
         title: "Orders",
         drawerLabel: "Orders",
         drawerIcon: ({size, color,focused})=><Entypo name="shopping-bag" size={size} color={color} />,
+      }} />
+      <Drawer.Screen name="user-info" component={UserInfo} options={{
+        title: "User Info",
+        drawerLabel: "User Info",
+        drawerIcon: ({size, color,focused})=><FontAwesome5 name="user-circle" size={size} color={color} />,
       }} />
     </Drawer.Navigator>
   </>

@@ -1,6 +1,7 @@
 import {
   View,
   Text,
+  Image,
   FlatList,
   StyleSheet,
   Pressable,
@@ -20,6 +21,7 @@ import Order from "../../components/orders/Order";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { uiActions } from "../../store/ui-slice";
+import { AntDesign} from '@expo/vector-icons';
 
 const Orders = ({ navigation }) => {
   const { width, height } = useWindowDimensions();
@@ -99,6 +101,7 @@ const Orders = ({ navigation }) => {
   }, [navigation, viewOrder]);
 
   function renderItemFn(item) {
+    //console.log("test-----",item.orderItems)
     return (
       <Pressable
         android_ripple={{ color: "#f3f3f3" }}
@@ -111,14 +114,23 @@ const Orders = ({ navigation }) => {
       >
         <Text
           style={{
-            textAlign: "center",
+            textAlign: 'left',
             fontSize: 20,
             color: "rgb(163, 4, 137)",
             fontWeight: 600,
           }}
         >
-          Order Id: {item.id}
+          Order {item.id}
         </Text>
+        <View style={styles.attendeesContainer}>
+          {item.orderItems.map((order) => (
+            <Image key={order.id} source={{ uri: order.design.designImages[0]?.preSignedURL }} style={styles.attendeeImage} />
+          ))}
+          {/*  order.design.designImages? item.design.designImages[0].preSignedURL : null
+          'https://cdn.pixabay.com/photo/2017/06/02/12/04/chain-2366132_1280.jpg'*/ }
+        </View>
+        
+        <AntDesign name="arrowright" style={[styles.arrow]} size={25} />
       </Pressable>
     );
   }
@@ -182,6 +194,8 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: "#a8edd4",
     padding: 10,
+    borderLeftWidth: 5,
+    borderLeftColor: 'rgb(163, 4, 137)',
     // marginBottom: 10,
     // flex: 1,
     width: "44.5%",
@@ -200,4 +214,24 @@ const styles = StyleSheet.create({
   pressDesign: {
     opacity: 0.75,
   },
+  attendeesContainer: {
+    flexWrap:'wrap',
+    flexDirection: 'row',
+    paddingHorizontal: 10,
+    marginTop: 10
+  },
+  attendeeImage: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginLeft: -10,
+    borderWidth:0.5,
+    marginTop:3,
+  },
+  arrow:{
+    height: 40,
+    width: 40,
+    marginTop:10,
+    color:'rgb(163, 4, 137)'
+  }
 });

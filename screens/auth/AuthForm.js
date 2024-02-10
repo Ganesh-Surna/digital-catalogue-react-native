@@ -1,4 +1,4 @@
-import { View, Text, Button, TextInput, StyleSheet, Alert, useWindowDimensions } from "react-native";
+import { View, Text, Button, TextInput, StyleSheet, Alert, useWindowDimensions, Pressable } from "react-native";
 import React, { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { login } from "../../util/http";
@@ -91,6 +91,7 @@ const AuthForm = ({ navigation, route }) => {
           autoCorrect={false}
         />
       </View>
+      {/* <Pressable></Pressable> */}
       {/* <Button title="Login" onPress={handleLogin} disabled={!formIsValid} /> */}
       <Button title={`${isPending ? "Loging..." : "Login"}`} onPress={handleLogin} disabled={!formIsValid || isPending} />
     </View>

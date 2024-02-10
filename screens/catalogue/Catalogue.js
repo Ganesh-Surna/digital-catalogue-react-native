@@ -51,7 +51,7 @@ const Catalogue = ({navigation}) => {
 
   function renderItemFn(item) {
     return (
-      <Pressable android_ripple={{color: "#f3f3f3"}} style={({pressed})=>[styles.container, pressed && styles.pressDesign]} onPress={()=>handleShowDesignDetails(item)}>
+      <Pressable android_ripple={{color: "#f3f3f3"}} style={({pressed})=>[width > height ? styles.container : styles.portraitContainer, pressed && styles.pressDesign]} onPress={()=>handleShowDesignDetails(item)}>
         <View>
             <Image source={{ uri: item.designImages[0] ? item.designImages[0].preSignedURL : null }} style={styles.image} />
         </View>
@@ -100,8 +100,21 @@ const styles = StyleSheet.create({
     padding: 6,
     alignItems: 'center',
   },
+  portraitContainer:{
+    margin:"1.5%",
+    backgroundColor:'white',
+    elevation: 2,
+    minWidth: "47%",
+    shadowColor: "black",
+    shadowOffset: {width: 1, height: 1},
+    shadowRadius: 4,
+    shadowOpacity: 0.25,
+    borderRadius: 8,
+    overflow: "hidden",
+},
   container:{
-    margin:6,
+    margin:"0.75%",
+    minWidth: "23%",
     backgroundColor:'white',
     elevation: 2,
     shadowColor: "black",
